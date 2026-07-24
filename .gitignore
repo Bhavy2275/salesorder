@@ -1,0 +1,29 @@
+# Dependency directories
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Log files
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db

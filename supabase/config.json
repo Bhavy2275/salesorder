@@ -1,0 +1,82 @@
+{
+  "id": "antigravity",
+  "name": "Anti Gravity B2B Field Sales",
+  "region": "ap-south-1",
+  "db": {
+    "port": 5432,
+    "shadow_port": 5433,
+    "major_version": 15
+  },
+  "studio": {
+    "port": 54323,
+    "api_url": "http://localhost"
+  },
+  "inbucket": {
+    "port": 54324,
+    "smtp_port": 54325,
+    "pop3_port": 54326
+  },
+  "auth": {
+    "site_url": "http://localhost:3000",
+    "additional_redirect_urls": ["https://antigravity.vercel.app"],
+    "jwt_expiry": 3600,
+    "enable_signup": false,
+    "email": {
+      "enable_signup": false,
+      "enable_confirmations": true,
+      "template": {
+        "invite": {
+          "subject": "Welcome to Anti Gravity",
+          "content_path": "./supabase/templates/invite.html"
+        },
+        "recovery": {
+          "subject": "Reset your Anti Gravity password",
+          "content_path": "./supabase/templates/recovery.html"
+        }
+      }
+    },
+    "sms": {
+      "enable_signup": false,
+      "enable_confirmations": false
+    },
+    "external": {
+      "google": {
+        "enabled": false
+      }
+    }
+  },
+  "api": {
+    "port": 54321,
+    "schemas": ["public"],
+    "extra_search_path": ["public", "extensions"],
+    "max_rows": 1000
+  },
+  "storage": {
+    "buckets": [
+      {
+        "name": "product-images",
+        "public": true,
+        "file_size_limit": "5MB",
+        "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"]
+      },
+      {
+        "name": "client-photos",
+        "public": false,
+        "file_size_limit": "5MB",
+        "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"]
+      },
+      {
+        "name": "delivery-proofs",
+        "public": false,
+        "file_size_limit": "10MB",
+        "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"]
+      },
+      {
+        "name": "order-pdfs",
+        "public": false,
+        "file_size_limit": "10MB",
+        "allowed_mime_types": ["application/pdf"]
+      }
+    ]
+  }
+}
