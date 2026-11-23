@@ -2,7 +2,7 @@
  * orderTemplate.js — HTML template for order summary PDF
  *
  * Renders a complete invoice-style PDF with:
- * - Anti Gravity branding header
+ * - Sales Order branding header
  * - Client + salesperson info
  * - Line items table (with scheme/free qty)
  * - GST breakdown footer
@@ -78,7 +78,7 @@ export function buildOrderPDF(order) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Order #${order.order_number} — Anti Gravity</title>
+  <title>Order #${order.order_number} — Sales Order</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -266,7 +266,7 @@ export function buildOrderPDF(order) {
     <div class="logo-block">
       <div class="logo-icon">AG</div>
       <div>
-        <div class="logo-text">Anti Gravity</div>
+        <div class="logo-text">Sales Order</div>
         <div class="logo-sub">B2B Field Sales Platform</div>
       </div>
     </div>
@@ -392,7 +392,7 @@ export function buildOrderPDF(order) {
         • Goods once dispatched are non-returnable without prior approval.<br/>
         • Payment due as per agreed terms: <strong>${paymentTermsLabels[order.payment_terms] || '—'}</strong><br/>
         • Any discrepancy must be reported within 48 hours of delivery.<br/>
-        • Subject to jurisdiction of Anti Gravity's registered office.
+        • Subject to jurisdiction of Sales Order's registered office.
       </p>
     </div>
   </div>
@@ -407,7 +407,7 @@ export function buildOrderPDF(order) {
     </div>
     <div>
       <div class="sig-line">
-        <div class="sig-name">For Anti Gravity</div>
+        <div class="sig-name">For Sales Order</div>
         <div class="sig-label">
           ${order.salesperson?.name || ''}${order.salesperson?.employee_code ? ` (${order.salesperson.employee_code})` : ''}
         </div>
@@ -419,12 +419,12 @@ export function buildOrderPDF(order) {
   <!-- ── Footer ── -->
   <div class="footer">
     <div class="footer-left">
-      <strong>Anti Gravity</strong> — B2B Field Sales & Inventory Platform<br/>
+      <strong>Sales Order</strong> — B2B Field Sales & Inventory Platform<br/>
       This is a computer-generated document. No signature required unless specified.<br/>
       Order Reference: <strong>#${order.order_number}</strong>
     </div>
     <div class="footer-right">
-      <div class="footer-brand">Anti Gravity</div>
+      <div class="footer-brand">Sales Order</div>
       <div class="footer-generated">Generated: ${now}</div>
     </div>
   </div>

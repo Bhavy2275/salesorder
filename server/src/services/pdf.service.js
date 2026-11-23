@@ -118,7 +118,7 @@ async function uploadPDFToCloudinary(pdfBuffer, orderId, orderNumber) {
     const stream = cloudinary.uploader.upload_stream(
       {
         resource_type: 'raw',              // PDFs are raw resources in Cloudinary
-        folder: 'antigravity/orders',
+        folder: 'salesorder/orders',
         public_id: `order_${orderNumber}_${orderId}`,
         format: 'pdf',
         type: 'private',                   // Only accessible via signed URL
@@ -146,7 +146,7 @@ async function uploadPDFToCloudinary(pdfBuffer, orderId, orderNumber) {
  * Generate a short-lived signed URL for a private Cloudinary PDF.
  * Required for private resource_type.
  *
- * @param {string} publicId - e.g., "antigravity/orders/order_ORD-001_uuid"
+ * @param {string} publicId - e.g., "salesorder/orders/order_ORD-001_uuid"
  * @returns {string} Signed download URL (valid for 24 hours)
  */
 export function generateSignedDownloadUrl(publicId) {
@@ -177,7 +177,7 @@ export async function generateOrderPDF(order) {
   const pdfBuffer = await renderPDF(html);
   const pdfUrl = await uploadPDFToCloudinary(pdfBuffer, order.id, order.order_number);
 
-  const publicId = `antigravity/orders/order_${order.order_number}_${order.id}`;
+  const publicId = `salesorder/orders/order_${order.order_number}_${order.id}`;
   return { pdfUrl, publicId };
 }
 

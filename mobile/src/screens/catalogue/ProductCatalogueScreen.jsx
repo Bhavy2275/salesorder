@@ -23,6 +23,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import Animated, {
   useSharedValue, useAnimatedStyle,
   withSpring, interpolate,
@@ -287,7 +288,7 @@ function AppHeader({ cartCount }) {
 
       <View style={styles.headerActions}>
         {/* Cart icon */}
-        <Pressable style={styles.headerIconBtn}>
+        <Pressable style={styles.headerIconBtn} onPress={() => router.push('/cart')}>
           <Ionicons name="cart-outline" size={24} color="#1F2937" />
           {cartCount > 0 && (
             <View style={styles.cartBadge}>

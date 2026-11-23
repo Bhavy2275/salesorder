@@ -19,49 +19,47 @@ INSERT INTO territories (id, name, description, state, city) VALUES
 -- In production, never seed real user passwords
 -- ─────────────────────────────────────────
 
--- bcrypt hash for "Password@123" (cost 10)
--- $2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
--- Use the actual hash from your bcrypt utility when seeding
+-- bcrypt hash for the local development password "Password@123" (cost 10).
 
 INSERT INTO users (id, name, mobile, email, password_hash, role, territory_id, employee_code) VALUES
   -- Admin
   ('b1000000-0000-0000-0000-000000000001',
-   'Arjun Sharma',    '9999000001', 'admin@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Arjun Sharma',    '9999000001', 'admin@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'admin', NULL, 'AG-ADMIN-001'),
 
   -- Managers
   ('b1000000-0000-0000-0000-000000000002',
-   'Priya Menon',     '9999000002', 'priya.m@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Priya Menon',     '9999000002', 'priya.m@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'manager', 'a1000000-0000-0000-0000-000000000001', 'AG-MGR-001'),
 
   ('b1000000-0000-0000-0000-000000000003',
-   'Rahul Joshi',     '9999000003', 'rahul.j@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Rahul Joshi',     '9999000003', 'rahul.j@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'manager', 'a1000000-0000-0000-0000-000000000004', 'AG-MGR-002'),
 
   -- Salespersons (reporting to Priya)
   ('b1000000-0000-0000-0000-000000000004',
-   'Amit Verma',      '9999000004', 'amit.v@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Amit Verma',      '9999000004', 'amit.v@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'salesperson', 'a1000000-0000-0000-0000-000000000001', 'AG-SP-001'),
 
   ('b1000000-0000-0000-0000-000000000005',
-   'Sneha Patil',     '9999000005', 'sneha.p@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Sneha Patil',     '9999000005', 'sneha.p@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'salesperson', 'a1000000-0000-0000-0000-000000000002', 'AG-SP-002'),
 
   -- Salesperson reporting to Rahul
   ('b1000000-0000-0000-0000-000000000006',
-   'Karan Kapoor',    '9999000006', 'karan.k@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Karan Kapoor',    '9999000006', 'karan.k@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'salesperson', 'a1000000-0000-0000-0000-000000000004', 'AG-SP-003'),
 
   -- Warehouse staff
   ('b1000000-0000-0000-0000-000000000007',
-   'Ravi Kumar',      '9999000007', 'ravi.wh@antigravity.in',
-   '$2b$10$PLACEHOLDER_HASH_REPLACE_IN_PRODUCTION',
+   'Ravi Kumar',      '9999000007', 'ravi.wh@salesorder.in',
+   '$2a$10$ThjM5WCOys5J/z72Lfmioetq.jvMkX0Of9ZA5kOBhIYx/AYyLXV6S',
    'warehouse', NULL, 'AG-WH-001');
 
 -- Set manager_id for salespersons
@@ -186,7 +184,7 @@ INSERT INTO clients (
   price_tier, credit_limit, payment_terms
 ) VALUES
   (
-    'g1000000-0000-0000-0000-000000000001',
+    '71000000-0000-0000-0000-000000000001',
     'Sharma General Store', 'Deepak Sharma', '9876543210',
     'sharma.store@gmail.com', 'retailer',
     '{"line1": "Shop 5, Lokhandwala Market", "city": "Mumbai", "state": "Maharashtra", "pincode": "400053"}',
@@ -196,7 +194,7 @@ INSERT INTO clients (
     'retailer', 10000.00, 'net_7'
   ),
   (
-    'g1000000-0000-0000-0000-000000000002',
+    '71000000-0000-0000-0000-000000000002',
     'Patel Distributors Pvt Ltd', 'Manish Patel', '9876543211',
     'patel.dist@gmail.com', 'distributor',
     '{"line1": "Warehouse 12, MIDC Industrial Area", "city": "Mumbai", "state": "Maharashtra", "pincode": "400093"}',
@@ -209,12 +207,12 @@ INSERT INTO clients (
 -- Tag the clients
 INSERT INTO client_tags (client_id, tag_id, tagged_by) VALUES
   (
-    'g1000000-0000-0000-0000-000000000001',
+    '71000000-0000-0000-0000-000000000001',
     (SELECT id FROM client_tag_definitions WHERE name = 'Hot Lead'),
     'b1000000-0000-0000-0000-000000000004'
   ),
   (
-    'g1000000-0000-0000-0000-000000000002',
+    '71000000-0000-0000-0000-000000000002',
     (SELECT id FROM client_tag_definitions WHERE name = 'VIP'),
     'b1000000-0000-0000-0000-000000000004'
   );

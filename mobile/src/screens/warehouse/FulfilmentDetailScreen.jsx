@@ -19,8 +19,7 @@ import * as Haptics from 'expo-haptics';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+import { API_BASE } from '../../api/apiConfig';
 
 const FLOW = {
   placed:     { next: 'picking',    cta: 'Start Picking',   color: '#3B82F6' },

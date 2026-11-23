@@ -33,7 +33,7 @@ import { useProduct } from '../../hooks/useProducts';
 import { useCartStore } from '../../store/cartStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/600x400/EDE9FE/7C3AED?text=Anti+Gravity';
+const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/600x400/EDE9FE/7C3AED?text=salesorder';
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();

@@ -1,7 +1,7 @@
 {
-  "name": "antigravity-server",
+  "name": "salesorder-server",
   "version": "1.0.0",
-  "description": "Anti Gravity B2B Field Sales — Backend API",
+  "description": "Sales Order B2B Field Sales — Backend API",
   "type": "module",
   "main": "src/index.js",
   "scripts": {

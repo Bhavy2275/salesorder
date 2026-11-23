@@ -32,6 +32,22 @@ export function sendSuccess(res, { data = null, message = 'Success', statusCode 
  * @param {object} options
  */
 export function sendError(res, { error = 'An error occurred', message = null, statusCode = 500, details = null } = {}) {
+  // Shorthand helpers are used throughout the routes as both send400(res,
+  // 'Bad input') and send400(res, { error: 'Bad input', details }). Accept
+  // either form, and never put an object in the user-facing `error` field.
+  if (error && typeof error === 'object') {
+    const wrapped = error;
+    message = message || (typeof wrapped.message === 'string' ? wrapped.message : null);
+    details = details || wrapped.details || (wrapped.error && typeof wrapped.error === 'object' ? wrapped.error : null);
+    error = typeof wrapped.error === 'string'
+      ? wrapped.error
+      : typeof wrapped.message === 'string'
+        ? wrapped.message
+        : 'Request validation failed';
+  }
+
+  if (typeof error !== 'string') error = String(error ?? 'An error occurred');
+
   const body = {
     success: false,
     data: null,

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { store } from '../../store/appStore';
 import { format } from 'date-fns';
-import { ClipboardList, ChevronRight } from 'lucide-react';
+import { ClipboardList, ChevronRight, Download, Printer } from 'lucide-react';
+import { downloadReceiptPdf, printReceipt } from '../../utils/receipt';
 
 const fmt = (n) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
@@ -73,15 +74,25 @@ function OrderDetail({ order, onClose, onStatusUpdate, isWarehouse }) {
           </div>
         </div>
 
-        {isWarehouse && sf.next && (
-          <div className="px-6 py-4 border-t border-gray-100">
+        <div className="px-6 py-4 border-t border-gray-100 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <button onClick={() => printReceipt(order)}
+              className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold py-3 rounded-xl transition">
+              <Printer size={15} /> Print Receipt
+            </button>
+            <button onClick={() => downloadReceiptPdf(order)}
+              className="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-sm font-bold py-3 rounded-xl transition">
+              <Download size={15} /> Download PDF
+            </button>
+          </div>
+          {isWarehouse && sf.next && (
             <button
               onClick={() => { onStatusUpdate(order.id, sf.next); onClose(); }}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
               {sf.nextLabel} <ChevronRight size={16} />
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

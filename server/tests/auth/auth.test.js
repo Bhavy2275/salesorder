@@ -23,7 +23,7 @@ const TEST_USER = {
   id: '00000000-test-0000-0000-000000000001',
   name: 'Test Salesperson',
   mobile: '9000000001',
-  email: 'test.sp@antigravity.in',
+  email: 'test.sp@salesorder.in',
   role: 'salesperson',
   is_active: true,
   employee_code: 'TEST-SP-001',
@@ -239,6 +239,6 @@ describe('GET /health', () => {
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(res.body.service).toBe('Anti Gravity API');
+    expect(res.body.service).toBe('Sales Order API');
   });
 });

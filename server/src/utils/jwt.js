@@ -48,8 +48,8 @@ export function generateAccessToken(user) {
     env.JWT_ACCESS_SECRET,
     {
       expiresIn: env.JWT_ACCESS_EXPIRES_IN,
-      issuer: 'antigravity-api',
-      audience: 'antigravity-app',
+      issuer: 'salesorder-api',
+      audience: 'salesorder-app',
     }
   );
 
@@ -69,8 +69,8 @@ export function generateAccessToken(user) {
  */
 export function verifyAccessToken(token) {
   return jwt.verify(token, env.JWT_ACCESS_SECRET, {
-    issuer: 'antigravity-api',
-    audience: 'antigravity-app',
+    issuer: 'salesorder-api',
+    audience: 'salesorder-app',
   });
 }
 
@@ -96,8 +96,8 @@ export function generateRefreshToken(userId, family = null) {
     env.JWT_REFRESH_SECRET,
     {
       expiresIn: env.JWT_REFRESH_EXPIRES_IN,
-      issuer: 'antigravity-api',
-      audience: 'antigravity-app',
+      issuer: 'salesorder-api',
+      audience: 'salesorder-app',
     }
   );
 
@@ -116,8 +116,8 @@ export function generateRefreshToken(userId, family = null) {
  */
 export function verifyRefreshToken(token) {
   return jwt.verify(token, env.JWT_REFRESH_SECRET, {
-    issuer: 'antigravity-api',
-    audience: 'antigravity-app',
+    issuer: 'salesorder-api',
+    audience: 'salesorder-app',
   });
 }
 

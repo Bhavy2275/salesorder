@@ -1,5 +1,5 @@
 {
-  "name": "antigravity-web",
+  "name": "salesorder-web",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -10,27 +10,28 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.1",
     "@tanstack/react-query": "^5.37.1",
     "@tanstack/react-query-devtools": "^5.37.1",
     "axios": "^1.7.2",
-    "recharts": "^2.12.7",
-    "date-fns": "^3.6.0",
-    "zustand": "^4.5.2",
-    "lucide-react": "^0.395.0",
     "clsx": "^2.1.1",
-    "react-hot-toast": "^2.4.1"
+    "date-fns": "^3.6.0",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^0.395.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.23.1",
+    "recharts": "^2.12.7",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
-    "vite": "^5.2.11",
-    "tailwindcss": "^3.4.4",
     "autoprefixer": "^10.4.19",
+    "eslint": "^9.2.0",
     "postcss": "^8.4.38",
-    "eslint": "^9.2.0"
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.2.11"
   }
 }

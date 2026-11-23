@@ -1,4 +1,4 @@
-# Anti Gravity — Database Schema
+# Sales Order — Database Schema
 
 > PostgreSQL via Supabase | v1.0 | May 2026
 
@@ -140,4 +140,4 @@ Performance-critical indexes created:
 
 ---
 
-*Anti Gravity | Confidential & Proprietary | v1.0 — May 2026*
+*Sales Order | Confidential & Proprietary | v1.0 — May 2026*

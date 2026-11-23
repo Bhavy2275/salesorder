@@ -19,8 +19,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+import { API_BASE } from '../../api/apiConfig';
 
 const PAYMENT_TERMS = [
   { value: 'cash', label: 'Cash on Delivery' },

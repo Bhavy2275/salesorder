@@ -1,6 +1,6 @@
 {
-  "id": "antigravity",
-  "name": "Anti Gravity B2B Field Sales",
+  "id": "salesorder",
+  "name": "Sales Order B2B Field Sales",
   "region": "ap-south-1",
   "db": {
     "port": 5432,
@@ -18,7 +18,7 @@
   },
   "auth": {
     "site_url": "http://localhost:3000",
-    "additional_redirect_urls": ["https://antigravity.vercel.app"],
+    "additional_redirect_urls": ["https://salesorder.vercel.app"],
     "jwt_expiry": 3600,
     "enable_signup": false,
     "email": {
@@ -26,11 +26,11 @@
       "enable_confirmations": true,
       "template": {
         "invite": {
-          "subject": "Welcome to Anti Gravity",
+          "subject": "Welcome to Sales Order",
           "content_path": "./supabase/templates/invite.html"
         },
         "recovery": {
-          "subject": "Reset your Anti Gravity password",
+          "subject": "Reset your Sales Order password",
           "content_path": "./supabase/templates/recovery.html"
         }
       }

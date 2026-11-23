@@ -79,8 +79,11 @@ export const store = {
   placeOrder({ salesperson, client, items, notes, paymentTerms }) {
     const orders = this.getOrders();
     const orderNumber = 1000 + orders.length + 1;
-    const grandTotal = items.reduce(
+    const subtotal = items.reduce(
       (s, it) => s + it.price * it.quantity, 0
+    );
+    const totalGst = items.reduce(
+      (s, it) => s + (it.price * it.quantity * (Number(it.gst) || 0)) / 100, 0
     );
 
     const order = {
@@ -92,7 +95,9 @@ export const store = {
       items,
       notes,
       payment_terms: paymentTerms,
-      grand_total:   grandTotal,
+      subtotal,
+      total_gst:     totalGst,
+      grand_total:   subtotal + totalGst,
       placed_at:     new Date().toISOString(),
       picking_started_at: null,
       packed_at:          null,

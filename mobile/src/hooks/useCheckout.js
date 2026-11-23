@@ -17,6 +17,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { createOrder, sendOTP, verifyOTP } from '../api/orders.api';
 import { useCartStore } from '../store/cartStore';
+import { printConfirmedOrder } from '../services/printer.service';
 
 const STEPS = { REVIEW: 1, CLIENT_DETAILS: 2, OTP: 3, SUCCESS: 4 };
 
@@ -32,12 +33,26 @@ export function useCheckout() {
   const [otpMeta, setOtpMeta] = useState(null);   // { sentTo, maskedMobile, channel, expiresInSeconds }
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [otpError, setOtpError] = useState(null);
+  const [printerStatus, setPrinterStatus] = useState('idle');
+  const [printerError, setPrinterError] = useState(null);
 
   const cartItems = useCartStore((s) => s.items);
   const getCartTotals = useCartStore((s) => s.getCartTotals);
   const clearCart = useCartStore((s) => s.clearCart);
   const clientId = useCartStore((s) => s.clientId);
   const localDraftId = useRef(`draft_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+
+  const printOrder = useCallback(async (confirmedOrder) => {
+    setPrinterStatus('printing');
+    setPrinterError(null);
+    try {
+      const result = await printConfirmedOrder(confirmedOrder);
+      setPrinterStatus(result.status);
+    } catch (err) {
+      setPrinterStatus('failed');
+      setPrinterError(err.message || 'Could not print the bill.');
+    }
+  }, []);
 
   // ─── Step 1 → 2: Submit order (creates draft + reserves stock) ──────────
   const submitOrder = useCallback(async (deliveryDetails) => {
@@ -105,6 +120,9 @@ export function useCheckout() {
       setOrder(confirmed);
       setStep(STEPS.SUCCESS);
       clearCart(); // 🎉 Order confirmed — clear the cart
+      // Printing is best-effort; the confirmed order remains successful if
+      // Bluetooth is unavailable or the printer is not configured yet.
+      void printOrder(confirmed);
     } catch (err) {
       const errData = err.response?.data;
       const remaining = errData?.attemptsLeft;
@@ -113,7 +131,7 @@ export function useCheckout() {
     } finally {
       setIsLoading(false);
     }
-  }, [order?.id, attemptsLeft, clearCart]);
+  }, [order?.id, attemptsLeft, clearCart, printOrder]);
 
   // ─── Navigation helpers ───────────────────────────────────────────────────
   const goToStep = useCallback((s) => setStep(s), []);
@@ -140,6 +158,8 @@ export function useCheckout() {
     otpMeta,
     attemptsLeft,
     otpError,
+    printerStatus,
+    printerError,
 
     // Cart snapshot
     cartItems,
@@ -149,6 +169,7 @@ export function useCheckout() {
     submitOrder,
     triggerSendOTP,
     submitOTP,
+    printOrder,
     goToStep,
     goBack,
     resetCheckout,

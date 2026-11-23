@@ -15,8 +15,7 @@ import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+import { API_BASE } from '../../api/apiConfig';
 
 const STATUS_COLORS = {
   placed:     { bg: '#DBEAFE', text: '#1D4ED8', dot: '#3B82F6' },

@@ -1,6 +1,6 @@
 -- ============================================================
 -- MIGRATION 001: Extensions & Custom Enum Types
--- Anti Gravity B2B Field Sales Platform
+-- Sales Order B2B Field Sales Platform
 -- Run this FIRST before any other migration
 -- ============================================================
 

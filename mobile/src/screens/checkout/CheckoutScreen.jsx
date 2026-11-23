@@ -40,11 +40,14 @@ export default function CheckoutScreen() {
     otpMeta,
     attemptsLeft,
     otpError,
+    printerStatus,
+    printerError,
     cartItems,
     cartTotals,
     submitOrder,
     triggerSendOTP,
     submitOTP,
+    printOrder,
     goToStep,
     goBack,
     resetCheckout,
@@ -74,6 +77,9 @@ export default function CheckoutScreen() {
     return (
       <OrderSuccessScreen
         order={order}
+        printerStatus={printerStatus}
+        printerError={printerError}
+        onPrint={() => printOrder(order)}
         onDone={() => {
           resetCheckout();
           router.replace('/catalogue');

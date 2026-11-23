@@ -167,7 +167,6 @@ CREATE INDEX idx_notifications_is_read    ON notifications(user_id, is_read) WHE
 CREATE INDEX idx_notifications_created_at ON notifications(created_at DESC);
 CREATE INDEX idx_notifications_type       ON notifications(type);
 
--- Auto-expire old notifications (>90 days) — run via pg_cron or API cron job
--- This index supports efficient deletion
-CREATE INDEX idx_notifications_cleanup    ON notifications(created_at)
-  WHERE created_at < NOW() - INTERVAL '90 days';
+-- Auto-expire old notifications (>90 days) via pg_cron or the API cron job.
+-- NOW() is not immutable, so it cannot be used in a partial index predicate.
+CREATE INDEX idx_notifications_cleanup    ON notifications(created_at);

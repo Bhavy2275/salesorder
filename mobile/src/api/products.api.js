@@ -1,14 +1,13 @@
 /**
  * products.api.js — Product Catalogue API Client
  *
- * Wraps Axios calls to the Anti Gravity backend.
+ * Wraps Axios calls to the Sales Order backend.
  * Handles auth headers, error parsing, and offline fallback.
  */
 
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+import { API_BASE } from './apiConfig';
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
 const api = axios.create({

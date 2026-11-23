@@ -6,13 +6,12 @@
  * 3. Opens sharing sheet (expo-sharing) or file viewer
  */
 import { useState } from 'react';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+import { API_BASE } from '../api/apiConfig';
 
 export function usePDF() {
   const [loading, setLoading] = useState(false);
@@ -49,7 +48,7 @@ export function usePDF() {
 
       await Sharing.shareAsync(fileUri, {
         mimeType: 'application/pdf',
-        dialogTitle: `Order #${orderNumber} — Anti Gravity`,
+        dialogTitle: `Order #${orderNumber} — Sales Order`,
         UTI: 'com.adobe.pdf',
       });
 

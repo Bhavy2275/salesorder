@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { store } from '../../store/appStore';
-import { Search, Plus, Minus, ShoppingCart, Trash2, CheckCircle, X } from 'lucide-react';
+import { Search, Plus, Minus, ShoppingCart, Trash2, CheckCircle, X, Download, Printer } from 'lucide-react';
+import { downloadReceiptPdf, printReceipt } from '../../utils/receipt';
 
 const fmt = (n) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
@@ -29,6 +30,16 @@ function SuccessModal({ order, onClose }) {
             <span className="text-gray-500">Payment</span>
             <span className="font-semibold capitalize">{order.payment_terms.replace('_', ' ')}</span>
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <button onClick={() => printReceipt(order)}
+            className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition">
+            <Printer size={16} /> Print Receipt
+          </button>
+          <button onClick={() => downloadReceiptPdf(order)}
+            className="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl transition">
+            <Download size={16} /> Download PDF
+          </button>
         </div>
         <button onClick={onClose}
           className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition">
@@ -78,10 +89,11 @@ export default function NewOrderPage({ user }) {
     const order = store.placeOrder({
       salesperson:  { name: user.name, id: user.id },
       client:       { name: client },
-      items:        cartItems.map((i) => ({ productId: i.id, name: i.name, sku: i.sku, price: i.price, quantity: i.quantity, unit: i.unit })),
+      items:        cartItems.map((i) => ({ productId: i.id, name: i.name, sku: i.sku, price: i.price, quantity: i.quantity, unit: i.unit, gst: i.gst })),
       notes,
       paymentTerms: payment,
     });
+    printReceipt(order);
     setSuccess(order);
     setCart({});
     setClient('');

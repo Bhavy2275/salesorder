@@ -66,13 +66,17 @@ export async function createOrder(payload, salespersonId) {
   // ── 2. Verify client exists and is assigned to this salesperson ───────────
   const { data: client, error: clientError } = await supabaseAdmin
     .from('clients')
-    .select('id, business_name, mobile_primary, delivery_address, payment_terms, price_tier')
+    .select('id, business_name, mobile_primary, delivery_address, payment_terms, price_tier, assigned_salesperson_id')
     .eq('id', clientId)
     .is('deleted_at', null)
     .single();
 
   if (clientError || !client) {
     throw Object.assign(new Error('Client not found.'), { statusCode: 404 });
+  }
+
+  if (client.assigned_salesperson_id !== salespersonId) {
+    throw Object.assign(new Error('This client is not assigned to your account.'), { statusCode: 403 });
   }
 
   // ── 3. Validate and price each item ───────────────────────────────────────

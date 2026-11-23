@@ -16,7 +16,7 @@ const PORT = env.PORT;
 
 // ─── Startup health checks ────────────────────────────────────────────────────
 async function checkConnections() {
-  logger.info('⚡ Anti Gravity API — Starting up...');
+  logger.info('⚡ Sales Order API — Starting up...');
 
   // Check Redis
   try {

@@ -27,3 +27,7 @@ out/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Expo local development state
+mobile/.expo/
+**/debug.keystore

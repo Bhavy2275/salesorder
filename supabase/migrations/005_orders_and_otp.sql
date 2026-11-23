@@ -64,6 +64,11 @@ CREATE TABLE orders (
   -- PDF export
   pdf_url             TEXT,                                  -- Cloudinary URL of generated PDF
 
+  -- Warehouse fulfilment audit
+  delivery_proof_url  TEXT,
+  warehouse_notes     TEXT,
+  updated_by          UUID REFERENCES users(id) ON DELETE SET NULL,
+
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

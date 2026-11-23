@@ -24,6 +24,7 @@ import orderRoutes from './routes/orders.routes.js';
 import pdfRoutes from './routes/pdf.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
+import clientRoutes from './routes/clients.routes.js';
 
 const app = express();
 
@@ -89,7 +90,7 @@ app.use('/api', apiLimiter);
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
-    service: 'Anti Gravity API',
+    service: 'Sales Order API',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
@@ -102,7 +103,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-// app.use('/api/clients', clientRoutes);
+app.use('/api/clients', clientRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/orders/:id/pdf', pdfRoutes);
 app.use('/api/dashboard', dashboardRoutes);

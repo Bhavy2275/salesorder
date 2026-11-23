@@ -53,7 +53,6 @@ FROM orders o
   JOIN users u           ON u.id = o.salesperson_id
 WHERE
   o.status IN ('placed', 'picking', 'packed', 'dispatched')
-  AND o.deleted_at IS NULL
 GROUP BY
   o.id, c.business_name, c.mobile_primary, c.delivery_address,
   u.name, u.mobile, u.employee_code
