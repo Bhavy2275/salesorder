@@ -18,6 +18,13 @@ import { fetchOrderDetail } from '../api/orders.api';
 
 const SAVED_PRINTER_KEY = 'ag_receipt_printer_address';
 const RECEIPT_COLUMNS = 32; // 58mm paper
+const BUSINESS = {
+  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED 26-27',
+  address: 'GHYASIPURA, NEAR MALANI DAL MILL, BAHRAICH, UTTAR PRADESH, 271801',
+  gstin: '09AANCM7213P1ZR',
+  iec: 'AANCM7213P',
+  email: 'malaniagrofoods@gmail.com',
+};
 
 const money = (value) => `Rs ${Number(value || 0).toFixed(2)}`;
 
@@ -28,14 +35,27 @@ function fitLine(left, right, columns = RECEIPT_COLUMNS) {
 }
 
 export function buildOrderReceipt(order) {
-  const builder = new EscPosBuilder().init().codepage(CODEPAGE.CP850);
+  // Small thermal printers tend to print thin strokes faintly. Keep the whole
+  // receipt in bold mode so every detail remains readable on paper.
+  const builder = new EscPosBuilder()
+    .init()
+    .codepage(CODEPAGE.CP850)
+    .bold(true)
+    // ESC/POS double-strike adds print-head emphasis on printers that support it.
+    .raw(0x1b, 0x47, 0x01);
   const items = order.items || [];
   const address = order.delivery_address || order.client?.delivery_address || {};
   const addressText = [address.line1, address.line2, address.city, address.state, address.pincode]
     .filter(Boolean).join(', ');
 
-  builder.align('center').bold(true).size(1, 2).line('SALES ORDER').size(1, 1).bold(false);
-  builder.line('ORDER BILL').dashedRule().align('left');
+  builder.align('center')
+    .wrapped(BUSINESS.name, { columns: RECEIPT_COLUMNS })
+    .size(1, 2).line('SALES ORDER').size(1, 1)
+    .wrapped(BUSINESS.address, { columns: RECEIPT_COLUMNS })
+    .line(`GSTIN: ${BUSINESS.gstin}`)
+    .line(`IEC: ${BUSINESS.iec}`)
+    .line(BUSINESS.email)
+    .dashedRule().align('left');
   builder.line(`Order: ${order.order_number || order.id}`);
   builder.line(`Date: ${new Date(order.placed_at || order.created_at || Date.now()).toLocaleString('en-IN')}`);
   builder.line(`Client: ${order.client?.business_name || '—'}`);
@@ -55,11 +75,11 @@ export function buildOrderReceipt(order) {
   builder.line(fitLine('Subtotal', money(order.subtotal)));
   builder.line(fitLine('GST', money(order.total_gst)));
   if (Number(order.discount_amount) > 0) builder.line(fitLine('Discount', `-${money(order.discount_amount)}`));
-  builder.bold(true).size(1, 2).line(fitLine('TOTAL', money(order.grand_total))).size(1, 1).bold(false);
+  builder.size(1, 2).line(fitLine('TOTAL', money(order.grand_total))).size(1, 1);
   builder.line(`Payment: ${order.payment_terms || '—'}`);
   builder.line(`Status: ${order.status || 'confirmed'}`);
   if (order.notes) builder.wrapped(`Note: ${order.notes}`, { columns: RECEIPT_COLUMNS });
-  return builder.align('center').feed(2).line('Thank you').feedToTear().build();
+  return builder.align('center').feed(2).line('Thank you').raw(0x1b, 0x47, 0x00).feedToTear().build();
 }
 
 export async function discoverReceiptPrinters() {

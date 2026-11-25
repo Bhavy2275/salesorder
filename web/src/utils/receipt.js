@@ -1,5 +1,13 @@
 import { jsPDF } from 'jspdf';
 
+const BUSINESS = {
+  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED 26-27',
+  address: 'GHYASIPURA, NEAR MALANI DAL MILL, BAHRAICH, UTTAR PRADESH, 271801',
+  gstin: '09AANCM7213P1ZR',
+  iec: 'AANCM7213P',
+  email: 'malaniagrofoods@gmail.com',
+};
+
 const money = (amount) =>
   `INR ${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(Number(amount) || 0)}`;
 
@@ -40,9 +48,9 @@ export function downloadReceiptPdf(order) {
   const items = order.items || [];
   const { subtotal, gst, total } = getTotals(order);
   const rows = items.map((item) => ({ item, nameLines: wrapName(item.name) }));
-  const height = Math.max(120, 68 + rows.reduce((sum, row) => sum + row.nameLines.length * 4 + 8, 0) + 44);
+  const height = Math.max(150, 98 + rows.reduce((sum, row) => sum + row.nameLines.length * 4 + 8, 0) + 44);
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [58, height] });
-  const center = (text, y, size = 8, bold = false) => {
+  const center = (text, y, size = 8, bold = true) => {
     pdf.setFont('courier', bold ? 'bold' : 'normal');
     pdf.setFontSize(size);
     pdf.text(String(text), 29, y, { align: 'center', maxWidth: 52 });
@@ -54,12 +62,17 @@ export function downloadReceiptPdf(order) {
   };
 
   let y = 7;
-  center('SALES RECEIPT', y, 9, true); y += 5;
+  for (const line of wrapName(BUSINESS.name, 32)) { center(line, y, 7); y += 3.5; }
+  for (const line of wrapName(BUSINESS.address, 32)) { center(line, y, 6); y += 3.2; }
+  center(`GSTIN: ${BUSINESS.gstin}`, y, 6); y += 3.5;
+  center(`IEC: ${BUSINESS.iec}`, y, 6); y += 3.5;
+  center(BUSINESS.email, y, 6); y += 3.5;
+  center('SALES RECEIPT', y, 9); y += 5;
   center(`Order #${order.order_number}`, y, 7); y += 4;
   center(new Date(order.placed_at || Date.now()).toLocaleString('en-IN'), y, 6); y += 5;
   rule(y); y += 5;
 
-  pdf.setFont('courier', 'normal');
+  pdf.setFont('courier', 'bold');
   pdf.setFontSize(7);
   pdf.text(`Client: ${order.client?.name || '—'}`, 3, y, { maxWidth: 52 }); y += 4;
   pdf.text(`Salesperson: ${order.salesperson?.name || '—'}`, 3, y, { maxWidth: 52 }); y += 5;
@@ -70,14 +83,14 @@ export function downloadReceiptPdf(order) {
     pdf.setFontSize(7);
     pdf.text(nameLines, 3, y, { maxWidth: 52, lineHeightFactor: 1.1 });
     y += nameLines.length * 3.4;
-    pdf.setFont('courier', 'normal');
+    pdf.setFont('courier', 'bold');
     pdf.text(`${item.quantity} ${item.unit || ''} x ${money(item.price)}`, 3, y);
     pdf.text(money(item.price * item.quantity), 55, y, { align: 'right' });
     y += 6;
   }
 
   rule(y); y += 5;
-  pdf.setFont('courier', 'normal');
+  pdf.setFont('courier', 'bold');
   pdf.setFontSize(7);
   pdf.text('Subtotal', 3, y); pdf.text(money(subtotal), 55, y, { align: 'right' }); y += 4;
   pdf.text('GST', 3, y); pdf.text(money(gst), 55, y, { align: 'right' }); y += 5;
@@ -85,7 +98,7 @@ export function downloadReceiptPdf(order) {
   pdf.setFontSize(8);
   pdf.text('TOTAL', 3, y); pdf.text(money(total), 55, y, { align: 'right' }); y += 6;
   rule(y); y += 5;
-  pdf.setFont('courier', 'normal');
+  pdf.setFont('courier', 'bold');
   pdf.setFontSize(7);
   pdf.text(`Payment: ${paymentLabel(order.payment_terms)}`, 3, y, { maxWidth: 52 }); y += 8;
   center('Thank you for your business!', y, 7, true);
@@ -111,11 +124,13 @@ export function printReceipt(order) {
     <style>
       @page { size: 58mm auto; margin: 3mm 2mm; }
       * { box-sizing: border-box; }
-      body { width: 54mm; margin: 0 auto; color: #111; font: 9px/1.35 "Courier New", monospace; }
+      body { width: 54mm; margin: 0 auto; color: #000; font: bold 9px/1.35 "Courier New", monospace; }
       h1, h2, p { margin: 0; }
       .center { text-align: center; }
       h1 { font-size: 13px; margin: 2mm 0 1mm; }
       h2 { font-size: 10px; margin-bottom: 1mm; }
+      .business-name { font-size: 9px; overflow-wrap: anywhere; }
+      .business-address { font-size: 7px; }
       .muted { font-size: 8px; }
       .rule { border-top: 1px dashed #333; margin: 2mm 0; }
       .item { margin: 2mm 0; }
@@ -125,7 +140,10 @@ export function printReceipt(order) {
       .total { font-size: 11px; font-weight: bold; }
       .thanks { margin-top: 4mm; }
     </style></head><body>
-      <header class="center"><h1>SALES RECEIPT</h1>
+      <header class="center"><h1 class="business-name">${escapeHtml(BUSINESS.name)}</h1>
+        <p class="business-address">${escapeHtml(BUSINESS.address)}</p>
+        <p>GSTIN: ${escapeHtml(BUSINESS.gstin)}</p><p>IEC: ${escapeHtml(BUSINESS.iec)}</p><p>${escapeHtml(BUSINESS.email)}</p>
+        <h2>SALES RECEIPT</h2>
         <p>Order #${escapeHtml(order.order_number)}</p><p class="muted">${escapeHtml(new Date(order.placed_at || Date.now()).toLocaleString('en-IN'))}</p>
       </header>
       <div class="rule"></div>
