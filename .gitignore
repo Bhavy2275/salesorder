@@ -30,4 +30,7 @@ Thumbs.db
 
 # Expo local development state
 mobile/.expo/
+
+# Agentation local state
+.agentation/
 **/debug.keystore

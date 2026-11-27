@@ -14,7 +14,7 @@ const STATS_CACHE_TTL = 60; // 1 minute
 export async function getWarehouseQueue(filters = {}) {
   const {
     status,           // Filter by specific status or 'all'
-    search,           // Search by order number, client name, salesperson
+    search,           // Search by order, party, GST number, item or salesperson
     sort = 'priority',
     page = 1,
     limit = 30,
@@ -40,6 +40,8 @@ export async function getWarehouseQueue(filters = {}) {
     query = query.or([
       `order_number.ilike.%${search}%`,
       `client_name.ilike.%${search}%`,
+      `client_gst.ilike.%${search}%`,
+      `item_names.ilike.%${search}%`,
       `salesperson_name.ilike.%${search}%`,
     ].join(','));
   }
@@ -90,7 +92,7 @@ export async function getOrderFulfilmentDetail(orderId) {
       delivery_date, notes, warehouse_notes, delivery_proof_url,
       placed_at, picking_started_at, packed_at, dispatched_at, delivered_at,
       client:client_id (
-        id, business_name, contact_person, mobile_primary,
+        id, business_name, contact_person, mobile_primary, gst_number,
         delivery_address, geo_lat, geo_lng
       ),
       salesperson:salesperson_id (id, name, mobile, employee_code),

@@ -6,26 +6,17 @@ import { format } from 'date-fns';
 import { Search, RefreshCw, AlertTriangle, Filter } from 'lucide-react';
 import clsx from 'clsx';
 import { useWarehouseQueue } from '../../hooks/useWarehouseQueue';
-import StatusBadge from './StatusBadge';
+import OrderViewPanel from './OrderViewPanel';
 
-const TABS = [
-  { value: 'all',        label: 'All Active' },
-  { value: 'placed',     label: 'Pending' },
-  { value: 'picking',    label: 'Picking' },
-  { value: 'packed',     label: 'Packed' },
-  { value: 'dispatched', label: 'Dispatched' },
-];
 
 const formatINR = (n) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n || 0);
 
 export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
-  const [activeTab, setActiveTab] = useState('all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching, refetch } = useWarehouseQueue({
-    status: activeTab === 'all' ? undefined : activeTab,
     search: search || undefined,
     page,
     limit: 25,
@@ -34,7 +25,6 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
   const orders = data?.orders || [];
   const pagination = data?.pagination;
 
-  const handleTabChange = (tab) => { setActiveTab(tab); setPage(1); };
   const handleSearch = (val) => { setSearch(val); setPage(1); };
 
   return (
@@ -45,7 +35,7 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 bg-gray-50"
-            placeholder="Order #, client, salesperson…"
+            placeholder="Search party, GST, bill no. or item…"
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -64,24 +54,6 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
         )}
       </div>
 
-      {/* ── Status tabs ── */}
-      <div className="flex gap-1 px-5 pt-3 pb-0 border-b border-gray-100">
-        {TABS.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => handleTabChange(tab.value)}
-            className={clsx(
-              'px-4 py-2 text-sm font-semibold rounded-t-lg border-b-2 transition-colors',
-              activeTab === tab.value
-                ? 'text-violet-600 border-violet-600 bg-violet-50/60'
-                : 'text-gray-500 border-transparent hover:text-gray-700 hover:bg-gray-50'
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       {/* ── Table ── */}
       <div className="flex-1 overflow-auto">
         {isLoading ? (
@@ -94,11 +66,11 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
               <tr>
                 <th>Order</th>
                 <th>Client</th>
+                <th>GST</th>
                 <th>Salesperson</th>
                 <th className="text-center">Items</th>
                 <th className="text-right">Total</th>
                 <th>Delivery Date</th>
-                <th>Status</th>
                 <th>Placed At</th>
               </tr>
             </thead>
@@ -129,6 +101,7 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
                     <p className="font-semibold text-gray-800 text-sm leading-tight">{order.client_name}</p>
                     <p className="text-xs text-gray-400">{order.client_mobile}</p>
                   </td>
+                  <td className="text-xs text-gray-500">{order.client_gst || '—'}</td>
                   <td>
                     <p className="text-sm text-gray-700">{order.salesperson_name}</p>
                     <p className="text-xs text-gray-400">{order.salesperson_code}</p>
@@ -145,7 +118,6 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
                         </span>
                       : <span className="text-gray-300 text-sm">—</span>}
                   </td>
-                  <td><StatusBadge status={order.status} /></td>
                   <td className="text-xs text-gray-400">
                     {order.placed_at ? format(new Date(order.placed_at), 'dd MMM, h:mm a') : '—'}
                   </td>
@@ -176,6 +148,7 @@ export default function OrderQueueTable({ onSelectOrder, selectedOrderId }) {
           </div>
         </div>
       )}
+      {selectedOrderId && <OrderViewPanel orderId={selectedOrderId} onClose={() => onSelectOrder(null)} />}
     </div>
   );
 }
@@ -197,7 +170,7 @@ function EmptyState() {
         <Filter size={28} className="text-gray-300" />
       </div>
       <p className="font-semibold text-gray-500">No orders in this view</p>
-      <p className="text-sm text-gray-400 mt-1">Try changing the status filter or search query.</p>
+      <p className="text-sm text-gray-400 mt-1">Try another search query.</p>
     </div>
   );
 }

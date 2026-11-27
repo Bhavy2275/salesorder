@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 
 const BUSINESS = {
-  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED 26-27',
+  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED',
   address: 'GHYASIPURA, NEAR MALANI DAL MILL, BAHRAICH, UTTAR PRADESH, 271801',
   gstin: '09AANCM7213P1ZR',
   iec: 'AANCM7213P',
@@ -22,6 +22,9 @@ const getTotals = (order) => {
 };
 
 const paymentLabel = (value) => ({
+  cash: 'Cash',
+  online: 'Online',
+  credit: 'Credit',
   cod: 'Cash on Delivery',
   credit_15: 'Credit 15 Days',
   credit_30: 'Credit 30 Days',
@@ -48,7 +51,10 @@ export function downloadReceiptPdf(order) {
   const items = order.items || [];
   const { subtotal, gst, total } = getTotals(order);
   const rows = items.map((item) => ({ item, nameLines: wrapName(item.name) }));
-  const height = Math.max(150, 98 + rows.reduce((sum, row) => sum + row.nameLines.length * 4 + 8, 0) + 44);
+  const customerLines = (order.client?.address ? wrapName(order.client.address, 32).length * 3.5 : 0)
+    + (order.client?.mobile ? 4 : 0) + (order.client?.alternate_mobile ? 4 : 0) + (order.client?.gstin ? 4 : 0);
+  const hsnLines = items.filter((item) => item.hsn).length * 3.5;
+  const height = Math.max(150, 98 + customerLines + hsnLines + rows.reduce((sum, row) => sum + row.nameLines.length * 4 + 8, 0) + 44);
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [58, height] });
   const center = (text, y, size = 8, bold = true) => {
     pdf.setFont('courier', bold ? 'bold' : 'normal');
@@ -75,6 +81,10 @@ export function downloadReceiptPdf(order) {
   pdf.setFont('courier', 'bold');
   pdf.setFontSize(7);
   pdf.text(`Client: ${order.client?.name || '—'}`, 3, y, { maxWidth: 52 }); y += 4;
+  if (order.client?.mobile) { pdf.text(`Mobile: ${order.client.mobile}`, 3, y); y += 4; }
+  if (order.client?.alternate_mobile) { pdf.text(`Alt: ${order.client.alternate_mobile}`, 3, y); y += 4; }
+  if (order.client?.gstin) { pdf.text(`GSTIN: ${order.client.gstin}`, 3, y); y += 4; }
+  if (order.client?.address) { for (const line of wrapName(order.client.address, 32)) { pdf.text(line, 3, y, { maxWidth: 52 }); y += 3.5; } }
   pdf.text(`Salesperson: ${order.salesperson?.name || '—'}`, 3, y, { maxWidth: 52 }); y += 5;
   rule(y); y += 5;
 
@@ -84,6 +94,7 @@ export function downloadReceiptPdf(order) {
     pdf.text(nameLines, 3, y, { maxWidth: 52, lineHeightFactor: 1.1 });
     y += nameLines.length * 3.4;
     pdf.setFont('courier', 'bold');
+    if (item.hsn) { pdf.setFontSize(6); pdf.text(`HSN Number: ${item.hsn}`, 3, y); y += 3.5; pdf.setFontSize(7); }
     pdf.text(`${item.quantity} ${item.unit || ''} x ${money(item.price)}`, 3, y);
     pdf.text(money(item.price * item.quantity), 55, y, { align: 'right' });
     y += 6;
@@ -118,6 +129,7 @@ export function printReceipt(order) {
   const itemRows = (order.items || []).map((item) => `
     <section class="item">
       <div class="name">${escapeHtml(item.name)}</div>
+      ${item.hsn ? `<div class="muted">HSN Number: ${escapeHtml(item.hsn)}</div>` : ''}
       <div class="row"><span>${escapeHtml(item.quantity)} ${escapeHtml(item.unit || '')} × ${escapeHtml(money(item.price))}</span><span>${escapeHtml(money(item.price * item.quantity))}</span></div>
     </section>`).join('');
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>Receipt #${escapeHtml(order.order_number)}</title>
@@ -147,7 +159,12 @@ export function printReceipt(order) {
         <p>Order #${escapeHtml(order.order_number)}</p><p class="muted">${escapeHtml(new Date(order.placed_at || Date.now()).toLocaleString('en-IN'))}</p>
       </header>
       <div class="rule"></div>
-      <p>Client: ${escapeHtml(order.client?.name || '—')}</p><p>Salesperson: ${escapeHtml(order.salesperson?.name || '—')}</p>
+      <p>Client: ${escapeHtml(order.client?.name || '—')}</p>
+      ${order.client?.mobile ? `<p>Mobile: ${escapeHtml(order.client.mobile)}</p>` : ''}
+      ${order.client?.alternate_mobile ? `<p>Alt: ${escapeHtml(order.client.alternate_mobile)}</p>` : ''}
+      ${order.client?.gstin ? `<p>GSTIN: ${escapeHtml(order.client.gstin)}</p>` : ''}
+      ${order.client?.address ? `<p>Address: ${escapeHtml(order.client.address)}</p>` : ''}
+      <p>Salesperson: ${escapeHtml(order.salesperson?.name || '—')}</p>
       <div class="rule"></div>${itemRows}<div class="rule"></div>
       <div class="row"><span>Subtotal</span><span>${escapeHtml(money(subtotal))}</span></div>
       <div class="row"><span>GST</span><span>${escapeHtml(money(gst))}</span></div>

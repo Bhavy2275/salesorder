@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Agentation } from 'agentation';
 import {
   BarChart2, Warehouse, Package, ShoppingCart,
   ClipboardList, LogOut, ShoppingBag,
@@ -124,6 +125,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
+      {import.meta.env.DEV && <Agentation />}
       <Toaster position="top-right" toastOptions={{
         style: { fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 500 },
         success: { iconTheme: { primary: '#7c3aed', secondary: '#fff' } },

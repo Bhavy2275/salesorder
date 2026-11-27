@@ -1,7 +1,7 @@
 /**
  * StatCards.jsx — KPI summary cards for the warehouse dashboard
  */
-import { TrendingUp, Clock, Package, Truck, CheckCircle, AlertTriangle } from 'lucide-react';
+import { TrendingUp, ClipboardList, CheckCircle, Boxes } from 'lucide-react';
 import clsx from 'clsx';
 
 function StatCard({ label, value, icon: Icon, color, sub, loading }) {
@@ -27,23 +27,18 @@ export default function StatCards({ stats, loading }) {
   const formatINR = (n) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n || 0);
 
-  const avgMins = stats?.avg_fulfil_mins ? Math.round(stats.avg_fulfil_mins) : null;
-
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-      <StatCard label="Pending"    value={stats?.total_placed}     icon={Clock}         color="bg-blue-500"    loading={loading} />
-      <StatCard label="Picking"    value={stats?.total_picking}    icon={Package}       color="bg-amber-500"   loading={loading} />
-      <StatCard label="Packed"     value={stats?.total_packed}     icon={Package}       color="bg-orange-500"  loading={loading} />
-      <StatCard label="Dispatched" value={stats?.total_dispatched} icon={Truck}         color="bg-violet-500"  loading={loading} />
-      <StatCard label="Delivered"  value={stats?.total_delivered}  icon={CheckCircle}   color="bg-green-500"   loading={loading} sub="Today" />
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCard label="Total Orders" value={stats?.total_orders} icon={ClipboardList} color="bg-violet-500" loading={loading} />
+      <StatCard label="Delivered Today" value={stats?.total_delivered} icon={CheckCircle} color="bg-green-500" loading={loading} />
       <StatCard
         label="Revenue Today"
         value={loading ? null : formatINR(stats?.revenue_today)}
         icon={TrendingUp}
         color="bg-emerald-600"
         loading={loading}
-        sub={avgMins ? `Avg ${avgMins}m to dispatch` : undefined}
       />
+      <StatCard label="Sales Quantity" value={stats?.total_quantity} icon={Boxes} color="bg-blue-500" loading={loading} sub="Units across all orders" />
     </div>
   );
 }

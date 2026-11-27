@@ -52,7 +52,7 @@ const createOrderSchema = z.object({
     landmark: z.string().optional(),
   }).optional(),
   deliveryDate: z.string().date().optional().nullable(),
-  paymentTerms: z.enum(['cash', 'net_7', 'net_15', 'net_30', 'net_45', 'net_60', 'credit']).optional(),
+  paymentTerms: z.enum(['cash', 'online', 'net_7', 'net_15', 'net_30', 'net_45', 'net_60', 'credit']).optional(),
   notes: z.string().max(500).optional(),
   localDraftId: z.string().max(100).optional(),
   createdOffline: z.boolean().default(false),

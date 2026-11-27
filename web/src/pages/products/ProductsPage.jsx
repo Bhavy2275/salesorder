@@ -9,7 +9,7 @@ const EMOJIS     = ['📦','🍫','🍪','🍜','🧈','🧂','🧼','🥤','�
 
 function ProductForm({ initial = {}, onSave, onCancel }) {
   const [f, setF] = useState({
-    name: '', sku: '', category: 'Staples', mrp: '', price: '', gst: '5', stock: '', unit: 'piece', image: '📦',
+    name: '', sku: '', category: 'Staples', mrp: '', price: '', gst: '5', stock: '', unit: 'piece', image: '📦', hsn: '', logoUrl: '',
     ...initial,
   });
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
@@ -40,6 +40,14 @@ function ProductForm({ initial = {}, onSave, onCancel }) {
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Product Name *</label>
               <input value={f.name} onChange={set('name')} placeholder="e.g. Amul Butter 500g"
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-gray-50" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">HSN Code</label>
+              <input value={f.hsn || ''} onChange={set('hsn')} placeholder="e.g. 1905" className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-gray-50" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Product Logo URL (optional)</label>
+              <input value={f.logoUrl || ''} onChange={set('logoUrl')} placeholder="https://…" className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-gray-50" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">SKU Code *</label>
@@ -189,6 +197,7 @@ export default function ProductsPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Category</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">MRP</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">HSN</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">GST</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">Stock</th>
                 <th className="px-4 py-3"></th>
@@ -196,7 +205,7 @@ export default function ProductsPage() {
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={8} className="text-center py-16 text-gray-400">
+                <tr><td colSpan={9} className="text-center py-16 text-gray-400">
                   <Package size={32} className="mx-auto mb-2 opacity-30" />
                   <p>No products found</p>
                 </td></tr>
@@ -207,7 +216,7 @@ export default function ProductsPage() {
                   style={{ transition: 'opacity 0.3s' }}>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{p.image}</span>
+                      {p.logoUrl ? <img src={p.logoUrl} alt="" className="w-8 h-8 rounded-lg object-contain" /> : <span className="text-2xl">{p.image}</span>}
                       <span className="font-semibold text-gray-800">{p.name}</span>
                     </div>
                   </td>
@@ -217,6 +226,7 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-4 py-3 text-right text-gray-500 line-through">{fmt(p.mrp)}</td>
                   <td className="px-4 py-3 text-right font-bold text-gray-900">{fmt(p.price)}</td>
+                  <td className="px-4 py-3 text-right font-mono text-xs text-gray-500">{p.hsn || '—'}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{p.gst}%</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`font-bold text-base ${p.stock === 0 ? 'text-red-600' : p.stock < 20 ? 'text-amber-600' : 'text-green-600'}`}>

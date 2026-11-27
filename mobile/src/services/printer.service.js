@@ -19,7 +19,7 @@ import { fetchOrderDetail } from '../api/orders.api';
 const SAVED_PRINTER_KEY = 'ag_receipt_printer_address';
 const RECEIPT_COLUMNS = 32; // 58mm paper
 const BUSINESS = {
-  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED 26-27',
+  name: 'MALANI AGRO FOODS PRODUCT PVT LIMTED',
   address: 'GHYASIPURA, NEAR MALANI DAL MILL, BAHRAICH, UTTAR PRADESH, 271801',
   gstin: '09AANCM7213P1ZR',
   iec: 'AANCM7213P',
@@ -65,6 +65,7 @@ export function buildOrderReceipt(order) {
 
   for (const item of items) {
     builder.wrapped(item.product_name || item.name || 'Item', { columns: RECEIPT_COLUMNS });
+    if (item.hsn_code || item.hsn) builder.line(`HSN Number: ${item.hsn_code || item.hsn}`);
     builder.line(fitLine(`${item.quantity} ${item.unit || ''} x ${money(item.unit_price)}`, money(item.line_total)));
     if (Number(item.free_qty) > 0) {
       builder.wrapped(`  Free: ${item.free_qty} ${item.unit || ''} (${item.scheme_name || 'scheme'})`, { columns: RECEIPT_COLUMNS });

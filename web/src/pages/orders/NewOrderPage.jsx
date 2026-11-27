@@ -55,8 +55,12 @@ export default function NewOrderPage({ user }) {
   const [search, setSearch] = useState('');
   const [cart, setCart]     = useState({}); // { productId: quantity }
   const [client, setClient] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [alternateMobile, setAlternateMobile] = useState('');
+  const [address, setAddress] = useState('');
+  const [gstin, setGstin] = useState('');
   const [notes, setNotes]   = useState('');
-  const [payment, setPayment] = useState('cod');
+  const [payment, setPayment] = useState('cash');
   const [success, setSuccess] = useState(null);
 
   const filtered = products.filter(
@@ -88,8 +92,8 @@ export default function NewOrderPage({ user }) {
     if (cartItems.length === 0) { alert('Add at least one product to cart.'); return; }
     const order = store.placeOrder({
       salesperson:  { name: user.name, id: user.id },
-      client:       { name: client },
-      items:        cartItems.map((i) => ({ productId: i.id, name: i.name, sku: i.sku, price: i.price, quantity: i.quantity, unit: i.unit, gst: i.gst })),
+      client:       { name: client, mobile, alternate_mobile: alternateMobile, address, gstin },
+      items:        cartItems.map((i) => ({ productId: i.id, name: i.name, sku: i.sku, hsn: i.hsn, price: i.price, quantity: i.quantity, unit: i.unit, gst: i.gst })),
       notes,
       paymentTerms: payment,
     });
@@ -97,6 +101,10 @@ export default function NewOrderPage({ user }) {
     setSuccess(order);
     setCart({});
     setClient('');
+    setMobile('');
+    setAlternateMobile('');
+    setAddress('');
+    setGstin('');
     setNotes('');
   };
 
@@ -117,13 +125,14 @@ export default function NewOrderPage({ user }) {
           <div className="lg:col-span-2 space-y-4">
             {/* Client */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Client / Shop Name *</label>
-              <input
-                value={client}
-                onChange={(e) => setClient(e.target.value)}
-                placeholder="e.g. Sharma General Store, Mumbai"
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500"
-              />
+              <h2 className="text-sm font-bold text-gray-800 mb-3">Customer Details</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label className="text-xs font-semibold text-gray-600">Party / Shop Name *<input value={client} onChange={(e) => setClient(e.target.value)} placeholder="e.g. Sharma General Store" className="mt-1 w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-normal bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500" /></label>
+                <label className="text-xs font-semibold text-gray-600">Mobile No.<input type="tel" value={mobile} onChange={(e) => setMobile(e.target.value)} placeholder="Primary mobile" className="mt-1 w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-normal bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500" /></label>
+                <label className="text-xs font-semibold text-gray-600">Alternate Mobile (optional)<input type="tel" value={alternateMobile} onChange={(e) => setAlternateMobile(e.target.value)} placeholder="Alternate contact" className="mt-1 w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-normal bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500" /></label>
+                <label className="text-xs font-semibold text-gray-600">GST No. (optional)<input value={gstin} onChange={(e) => setGstin(e.target.value.toUpperCase())} placeholder="GSTIN" className="mt-1 w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-normal bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500" /></label>
+                <label className="sm:col-span-2 text-xs font-semibold text-gray-600">Address<input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Delivery / billing address" className="mt-1 w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-normal bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500" /></label>
+              </div>
             </div>
 
             {/* Search */}
@@ -241,10 +250,9 @@ export default function NewOrderPage({ user }) {
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Payment Terms</label>
                   <select value={payment} onChange={(e) => setPayment(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                    <option value="cod">Cash on Delivery</option>
-                    <option value="credit_15">Credit 15 Days</option>
-                    <option value="credit_30">Credit 30 Days</option>
-                    <option value="prepaid">Prepaid</option>
+                    <option value="cash">Cash</option>
+                    <option value="online">Online</option>
+                    <option value="credit">Credit</option>
                   </select>
                 </div>
 

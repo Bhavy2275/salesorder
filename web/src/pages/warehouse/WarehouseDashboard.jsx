@@ -12,18 +12,18 @@
  * └──────────────────────────────┴─────────────────┘
  */
 import { useState } from 'react';
-import { Warehouse, Wifi } from 'lucide-react';
+import { Warehouse } from 'lucide-react';
 import { format } from 'date-fns';
 import { useWarehouseStats } from '../../hooks/useWarehouseQueue';
 import StatCards from '../../components/warehouse/StatCards';
 import OrderQueueTable from '../../components/warehouse/OrderQueueTable';
-import FulfilmentPanel from '../../components/warehouse/FulfilmentPanel';
 
 export default function WarehouseDashboard() {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const { data: stats, isLoading: statsLoading } = useWarehouseStats();
 
   const handleSelectOrder = (id) => {
+    if (!id) { setSelectedOrderId(null); return; }
     setSelectedOrderId((prev) => (prev === id ? null : id)); // Toggle
   };
 
@@ -42,13 +42,6 @@ export default function WarehouseDashboard() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Live indicator */}
-          <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-3 py-1.5">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <Wifi size={12} className="text-green-600" />
-            <span className="text-xs font-semibold text-green-700">Live Queue</span>
-          </div>
-
           <div className="text-right">
             <p className="text-xs font-semibold text-gray-700">{format(new Date(), 'EEEE, d MMMM')}</p>
             <p className="text-xs text-gray-400">{format(new Date(), 'h:mm a')}</p>
@@ -68,29 +61,8 @@ export default function WarehouseDashboard() {
           <StatCards stats={stats} loading={statsLoading} />
         </section>
 
-        {/* ── Queue + Panel ── */}
-        <section className="flex-1 flex gap-5 min-h-0">
-          {/* Table — shrinks when panel is open */}
-          <div
-            className="transition-all duration-300 ease-in-out min-h-0"
-            style={{ flex: selectedOrderId ? '0 0 calc(58% - 10px)' : '1 1 100%' }}
-          >
-            <OrderQueueTable
-              onSelectOrder={handleSelectOrder}
-              selectedOrderId={selectedOrderId}
-            />
-          </div>
-
-          {/* Fulfilment panel — slides in from right */}
-          {selectedOrderId && (
-            <div className="flex-1 min-h-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden
-                            animate-in slide-in-from-right duration-200">
-              <FulfilmentPanel
-                orderId={selectedOrderId}
-                onClose={() => setSelectedOrderId(null)}
-              />
-            </div>
-          )}
+        <section className="flex-1 min-h-0">
+          <OrderQueueTable onSelectOrder={handleSelectOrder} selectedOrderId={selectedOrderId} />
         </section>
       </main>
     </div>
